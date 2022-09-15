@@ -1,4 +1,5 @@
 from firedrake import *
+from integration_operator import integral_operator
 
 n = 50  # number of mesh elements
 mesh = PeriodicUnitSquareMesh(n, n)  # periodic square mesh with side length 1
@@ -21,11 +22,16 @@ x,y = SpatialCoordinate(mesh)
 i_vel = project(as_vector([sin(2*pi*y), 0]), V) # initial velocity
 u_.assign(i_vel)
 
+w = project(as_vector([Constant(assemble(u_[0]*dx)),Constant(assemble(u_[1]*dx))]), V)
 
+int_op = integral_operator(function_space=V)
+
+N = int_op(u, u_)
 F = ( inner(u - u_, v)
      + Dt*half*alpha*inner(nabla_grad(u) + nabla_grad(u_), nabla_grad(v))
      + Dt*half*beta*inner(u + u_, v)
-     - Dt*beta*inner(project(as_vector([Constant(assemble(u_[0]*dx)),Constant(assemble(u_[1]*dx))]), V),v)
+     # - Dt*beta*inner(w, v)
+     - Dt*beta*inner(N, v)
      )*dx
 
 
@@ -37,7 +43,7 @@ iter = 1
 end = 1
 while (round(t,4)<=end):
 
-    solve(F==0,u)
+    solve(F==0, u, solver_parameters={"mat_type": "matfree", "ksp_type": "cg", "pc_type": "none"})
 
     if iter%10==0:
        print("t=", round(t,2))
