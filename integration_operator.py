@@ -56,7 +56,7 @@ class IntegrationOperator(AbstractExternalOperator):
             # test for un: 0
             pass
         elif self.scheme == 'crank_nicholson':
-            Omega = 1 # assemble(1 * dx)
+            Omega = 1 # assemble(Constant(1) * dx)
             action1 = assemble((0.5/Omega) * phi[0] * dx)
             action2 = assemble((0.5/Omega) * phi[1] * dx)
             return Function(self.function_space()).assign(as_vector([action1, action2]))
