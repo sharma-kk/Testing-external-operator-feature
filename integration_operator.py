@@ -37,6 +37,7 @@ class IntegrationOperator(AbstractExternalOperator):
 
         if self.scheme == 'un':
             # test for un: int(un * dx)
+            pass
         elif self.scheme == 'crank_nicholson':
             Omega = 1 # assemble(1 * dx)
             int1 = assemble((0.5/Omega)* (u[0] + w[0]) * dx)
@@ -53,6 +54,7 @@ class IntegrationOperator(AbstractExternalOperator):
 
         if self.scheme == 'un':
             # test for un: 0
+            pass
         elif self.scheme == 'crank_nicholson':
             Omega = 1 # assemble(1 * dx)
             action1 = assemble((0.5/Omega) * phi[0] * dx)
